@@ -1,5 +1,5 @@
 /* Player_Tv - app.js */
-window.APP_VERSION = "1.1.13";
+window.APP_VERSION = "1.1.14";
 
 const colorPalette = [
     "linear-gradient(180deg,#ff6b6b,#c92a2a)",
