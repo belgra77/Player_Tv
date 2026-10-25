@@ -1,5 +1,5 @@
 /* Player_Tv - app.js */
-window.APP_VERSION = "1.0.5";
+window.APP_VERSION = "1.0.6";
 
 const STORAGE = {
   sources: "player_tv_sources",
@@ -487,15 +487,15 @@ renderSettings();
 // Auto-load / weekly update default lists (background)
 async function loadDefaults() {
   const lists = [
-    { id: "src_default", file: "./default.m3u", name: "TDT_ES" },
-    { id: "src_free", file: "./default_es_free.m3u", name: "Free-TV España" },
-    { id: "src_iptvorg", file: "./default_iptvorg.m3u", name: "iptv-org España" },
-    { id: "src_vk", file: "./default_vk.m3u", name: "vk496 España" },
-    { id: "src_coderfast", file: "./default_coderfast.m3u", name: "coderfast España" },
-    { id: "src_jromero", file: "./default_jromero.m3u", name: "jromero88 España" },
-    { id: "src_plutoes", file: "./default_plutoes.m3u", name: "Pluto TV España" },
-    { id: "src_freeglobal", file: "./default_free_global.m3u", name: "Free-TV Global" },
-    { id: "src_iptvorg_global", file: "./default_iptvorg_global.m3u", name: "iptv-org Global" },
+    { id: "src_default", file: "https://raw.githubusercontent.com/belgra77/Player_Tv/main/default.m3u", name: "TDT_ES" },
+    { id: "src_free", file: "https://raw.githubusercontent.com/belgra77/Player_Tv/main/default_es_free.m3u", name: "Free-TV España" },
+    { id: "src_iptvorg", file: "https://raw.githubusercontent.com/belgra77/Player_Tv/main/default_iptvorg.m3u", name: "iptv-org España" },
+    { id: "src_vk", file: "https://raw.githubusercontent.com/belgra77/Player_Tv/main/default_vk.m3u", name: "vk496 España" },
+    { id: "src_coderfast", file: "https://raw.githubusercontent.com/belgra77/Player_Tv/main/default_coderfast.m3u", name: "coderfast España" },
+    { id: "src_jromero", file: "https://raw.githubusercontent.com/belgra77/Player_Tv/main/default_jromero.m3u", name: "jromero88 España" },
+    { id: "src_plutoes", file: "https://raw.githubusercontent.com/belgra77/Player_Tv/main/default_plutoes.m3u", name: "Pluto TV España" },
+    { id: "src_freeglobal", file: "https://raw.githubusercontent.com/belgra77/Player_Tv/main/default_free_global.m3u", name: "Free-TV Global" },
+    { id: "src_iptvorg_global", file: "https://raw.githubusercontent.com/belgra77/Player_Tv/main/default_iptvorg_global.m3u", name: "iptv-org Global" },
   ];
   const now = Date.now();
   const week = 7*24*60*60*1000;
