@@ -33,7 +33,7 @@ const STORAGE = {
   settings: "player_tv_settings",
   version: "player_tv_version",
 };
-const UPDATE_URL = "https://belgra77.github.io/iptv_player_ios_pwa/Player_Tv.html";
+const UPDATE_URL = "https://raw.githubusercontent.com/belgra77/Player_Tv/main/index.html";
 
 let sources = [];
 let channels = [];
