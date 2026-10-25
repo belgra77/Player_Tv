@@ -1,5 +1,5 @@
 /* Player_Tv - app.js */
-window.APP_VERSION = "1.1.11";
+window.APP_VERSION = "1.1.12";
 
 const colorPalette = [
     "linear-gradient(180deg,#ff6b6b,#c92a2a)",
@@ -550,34 +550,23 @@ async function loadDefaults() {
     { id: "src_iptvorg_global", file: "https://raw.githubusercontent.com/belgra77/Player_Tv/main/default_iptvorg_global.m3u", name: "iptv-org Global" },
   ];
   const now = Date.now();
-  const week = 7*24*60*60*1000;
   let changed = false;
   for (const L of lists) {
-    const def = sources.find(s => s.id === L.id);
-    if (!def || !def.lastUpdate || (now - def.lastUpdate) > week) {
-      try {
-        const res = await fetch(L.file);
-        if (res.ok) {
-          const text = await res.text();
-          const parsed = parseM3U(text);
-          if (def) {
-            channels = channels.filter(c => c.sourceId !== L.id);
-            def.channels = parsed; def.loadedAt = now; def.lastUpdate = now; def.name = L.name;
-            parsed.forEach(ch => channels.push({ ...ch, sourceId: L.id }));
-          } else {
-            sources.push({ id: L.id, name: L.name, type: "text", url: "", channels: parsed, loadedAt: now, lastUpdate: now, color: getNextColor() });
-            parsed.forEach(ch => channels.push({ ...ch, sourceId: L.id }));
-          }
-          collapsedGroups.add(L.name);
-          parsed.forEach(ch => collapsedGroups.add(L.name + "::" + (ch.group || "Sin grupo")));
-          changed = true;
-        } else {
-          console.warn("Failed to fetch", L.file, res.status);
-        }
-      } catch (e) {
-        console.warn("Error fetching", L.file, e);
+    try {
+      const res = await fetch(L.file + "?t=" + now, { cache: "no-store" });
+      if (res.ok) {
+        const text = await res.text();
+        const parsed = parseM3U(text);
+        // remove old
+        sources = sources.filter(s => s.id !== L.id);
+        channels = channels.filter(c => c.sourceId !== L.id);
+        sources.push({ id: L.id, name: L.name, type: "text", url: "", channels: parsed, loadedAt: now, lastUpdate: now, color: getNextColor() });
+        parsed.forEach(ch => channels.push({ ...ch, sourceId: L.id }));
+        collapsedGroups.add(L.name);
+        parsed.forEach(ch => collapsedGroups.add(L.name + "::" + (ch.group || "Sin grupo")));
+        changed = true;
       }
-    }
+    } catch (e) {}
   }
   if (changed) { saveState(); renderSources(); renderChannels(); }
 }
