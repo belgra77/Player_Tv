@@ -1,5 +1,5 @@
 /* Player_Tv - app.js */
-window.APP_VERSION = "1.1.12";
+window.APP_VERSION = "1.1.13";
 
 const colorPalette = [
     "linear-gradient(180deg,#ff6b6b,#c92a2a)",
@@ -26,6 +26,14 @@ function safeLS() {
 function lsGet(key, def) { const ls = safeLS(); if (!ls) return def; try { return ls.getItem(key); } catch (e) { return def; } }
 function lsSet(key, val) { const ls = safeLS(); if (!ls) return; try { ls.setItem(key, val); } catch (e) {} }
 function lsRemove(key) { const ls = safeLS(); if (!ls) return; try { ls.removeItem(key); } catch (e) {} }
+
+const STORAGE = {
+  sources: "player_tv_sources",
+  channels: "player_tv_channels",
+  settings: "player_tv_settings",
+  version: "player_tv_version",
+};
+const UPDATE_URL = "https://belgra77.github.io/iptv_player_ios_pwa/Player_Tv.html";
 
 let sources = [];
 let channels = [];
