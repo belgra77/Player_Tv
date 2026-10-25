@@ -1,5 +1,5 @@
 /* Player_Tv - app.js */
-window.APP_VERSION = "1.0.2";
+window.APP_VERSION = "1.0.3";
 
 const STORAGE = {
   sources: "player_tv_sources",
