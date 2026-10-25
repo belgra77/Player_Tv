@@ -1,5 +1,5 @@
 /* Player_Tv - app.js */
-window.APP_VERSION = "1.0.6";
+window.APP_VERSION = "1.0.7";
 
 const STORAGE = {
   sources: "player_tv_sources",
@@ -365,7 +365,7 @@ function renderSettings() {
     { title: "Datos", rows: [
       { type: "button", label: "Borrar caché de la app", action: clearCache, danger: false },
       { type: "button", label: "Eliminar todas las listas", action: deleteAll, danger: true },
-      { type: "button", label: "Cargar listas precargadas", action: () => { sources = sources.filter(s => !["src_default","src_free","src_iptvorg","src_vk","src_coderfast","src_jromero","src_plutoes","src_freeglobal","src_iptvorg_global"].includes(s.id)); channels = channels.filter(c => !["src_default","src_free","src_iptvorg","src_vk","src_coderfast","src_jromero","src_plutoes","src_freeglobal","src_iptvorg_global"].includes(c.sourceId)); saveState(); loadDefaults().then(()=>toast("Listas cargadas")); }, danger: false },
+      { type: "button", label: "Cargar listas precargadas", action: async () => { try { sources = sources.filter(s => !["src_default","src_free","src_iptvorg","src_vk","src_coderfast","src_jromero","src_plutoes","src_freeglobal","src_iptvorg_global"].includes(s.id)); channels = channels.filter(c => !["src_default","src_free","src_iptvorg","src_vk","src_coderfast","src_jromero","src_plutoes","src_freeglobal","src_iptvorg_global"].includes(c.sourceId)); saveState(); await loadDefaults(); toast("Listas cargadas"); } catch (e) { await showAlert("Error", e.message); } }, danger: false },
     ]},
     { title: "Acerca de", rows: [
       { label: "Nombre", value: "Player_Tv" },
