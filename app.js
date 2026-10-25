@@ -1,5 +1,5 @@
 /* Player_Tv - app.js */
-window.APP_VERSION = "1.1.0";
+window.APP_VERSION = "1.1.1";
 
 const STORAGE = {
   sources: "player_tv_sources",
@@ -510,7 +510,7 @@ async function loadDefaults() {
           const parsed = parseM3U(text);
           if (def) {
             channels = channels.filter(c => c.sourceId !== L.id);
-            def.content = text; def.channels = parsed; def.loadedAt = now; def.lastUpdate = now; def.name = L.name;
+            def.channels = parsed; def.loadedAt = now; def.lastUpdate = now; def.name = L.name;
             parsed.forEach(ch => channels.push({ ...ch, sourceId: L.id }));
           } else {
             sources.push({ id: L.id, name: L.name, type: "text", url: "", channels: parsed, loadedAt: now, lastUpdate: now });
