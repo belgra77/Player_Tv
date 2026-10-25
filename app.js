@@ -1,5 +1,5 @@
 /* Player_Tv - app.js */
-window.APP_VERSION = "1.0.1";
+window.APP_VERSION = "1.0.2";
 
 const STORAGE = {
   sources: "player_tv_sources",
@@ -7,7 +7,7 @@ const STORAGE = {
   settings: "player_tv_settings",
   version: "player_tv_version",
 };
-const UPDATE_URL = "https://github.com/belgra77/Player_Tv/blob/main/index.html";
+const UPDATE_URL = "https://raw.githubusercontent.com/belgra77/Player_Tv/main/index.html";
 
 let sources = [];
 let channels = [];
