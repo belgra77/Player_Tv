@@ -1,5 +1,5 @@
 /* Player_Tv - app.js */
-window.APP_VERSION = "1.1.14";
+window.APP_VERSION = "1.1.15";
 
 const colorPalette = [
     "linear-gradient(180deg,#ff6b6b,#c92a2a)",
@@ -14,11 +14,7 @@ const colorPalette = [
     "linear-gradient(180deg,#ff8787,#fa5252)"
   ];
   let colorIndex = 0;
-  function getNextColor() {
-    const color = colorPalette[colorIndex % colorPalette.length];
-    colorIndex++;
-    return color;
-  }
+  function getNextColor() { return "linear-gradient(135deg,#0a0a0a,#000000)"; }
 
 function safeLS() {
   try { return window.localStorage; } catch (e) { return null; }
