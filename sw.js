@@ -1,5 +1,5 @@
 // sw.js - Player_Tv service worker
-const CACHE_NAME = "player-tv-v2";
+const CACHE_NAME = "player-tv-v3";
 const ASSETS = ["./", "./index.html", "./styles.css", "./app.js", "./manifest.json", "./default.m3u", "./default_es_free.m3u", "./default_iptvorg.m3u", "./default_vk.m3u", "./default_free_global.m3u", "./default_coderfast.m3u", "./default_jromero.m3u", "./default_plutoes.m3u", "./default_mx.m3u", "./default_plutomx.m3u", "./default_free_mx.m3u", "./default_free_ar.m3u", "./default_free_chile.m3u", "./default_free_peru.m3u", "./default_free_venezuela.m3u", "./default_jr_hn.m3u", "./default_plutocl.m3u", "./default_plutoar.m3u", "./default_tdt_radio.m3u", "./default_iptvorg_global.m3u"];
 
 self.addEventListener("install", (event) => {
