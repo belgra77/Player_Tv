@@ -1,5 +1,5 @@
 /* Player_Tv - app.js */
-window.APP_VERSION = "1.0.3";
+window.APP_VERSION = "1.0.4";
 
 const STORAGE = {
   sources: "player_tv_sources",
@@ -365,6 +365,7 @@ function renderSettings() {
     { title: "Datos", rows: [
       { type: "button", label: "Borrar caché de la app", action: clearCache, danger: false },
       { type: "button", label: "Eliminar todas las listas", action: deleteAll, danger: true },
+      { type: "button", label: "Cargar listas precargadas", action: () => loadDefaults().then(()=>toast("Listas cargadas")), danger: false },
     ]},
     { title: "Acerca de", rows: [
       { label: "Nombre", value: "Player_Tv" },
@@ -484,7 +485,7 @@ renderChannels();
 renderSettings();
 
 // Auto-load / weekly update default lists (background)
-(async function loadDefaults() {
+async function loadDefaults() {
   const lists = [
     { id: "src_default", file: "./default.m3u", name: "TDT_ES" },
     { id: "src_free", file: "./default_es_free.m3u", name: "Free-TV España" },
@@ -523,7 +524,8 @@ renderSettings();
     }
   }
   if (changed) { saveState(); renderSources(); renderChannels(); }
-})();
+}
+loadDefaults();
 
 // register SW
 if ("serviceWorker" in navigator) {
