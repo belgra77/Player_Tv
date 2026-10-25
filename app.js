@@ -1,5 +1,5 @@
 /* Player_Tv - app.js */
-window.APP_VERSION = "1.0.7";
+window.APP_VERSION = "1.0.8";
 
 const STORAGE = {
   sources: "player_tv_sources",
@@ -27,7 +27,7 @@ function loadState() {
   if (!localStorage.getItem(STORAGE.version)) localStorage.setItem(STORAGE.version, window.APP_VERSION);
 }
 function saveState() {
-  localStorage.setItem(STORAGE.sources, JSON.stringify(sources));
+  localStorage.setItem(STORAGE.sources, JSON.stringify(sources.map(x=>{const{content,...r}=x;return r;})));
   localStorage.setItem(STORAGE.channels, JSON.stringify(channels));
   localStorage.setItem(STORAGE.settings, JSON.stringify(settings));
 }
@@ -198,11 +198,11 @@ document.getElementById("modal-save").addEventListener("click", async () => {
     const src = sources.find(s => s.id === editingSourceId);
     // remove old channels
     channels = channels.filter(c => c.sourceId !== editingSourceId);
-    src.name = name; src.type = type; src.url = url; src.content = content; src.channels = parsed; src.loadedAt = Date.now();
+    src.name = name; src.type = type; src.url = url; src.content = ""; src.channels = parsed; src.loadedAt = Date.now();
     parsed.forEach(ch => channels.push({ ...ch, sourceId: src.id }));
   } else {
     const id = "src_" + Date.now();
-    const src = { id, name, type, url, content, channels: parsed, loadedAt: Date.now() };
+    const src = { id, name, type, url, content: "", channels: parsed, loadedAt: Date.now() };
     sources.push(src);
     parsed.forEach(ch => channels.push({ ...ch, sourceId: id }));
   }
@@ -513,7 +513,7 @@ async function loadDefaults() {
             def.content = text; def.channels = parsed; def.loadedAt = now; def.lastUpdate = now; def.name = L.name;
             parsed.forEach(ch => channels.push({ ...ch, sourceId: L.id }));
           } else {
-            sources.push({ id: L.id, name: L.name, type: "text", url: "", content: text, channels: parsed, loadedAt: now, lastUpdate: now });
+            sources.push({ id: L.id, name: L.name, type: "text", url: "", channels: parsed, loadedAt: now, lastUpdate: now });
             parsed.forEach(ch => channels.push({ ...ch, sourceId: L.id }));
           }
           collapsedGroups.add(L.name);
