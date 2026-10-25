@@ -81,6 +81,6 @@ html, body { touch-action: manipulation; margin: 0; padding: 0; height: 100%; fo
 .toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); background: rgba(0,240,255,0.15); color: var(--accent); border: 1px solid var(--accent); padding: 10px 16px; border-radius: 20px; font-size: 14px; z-index: 200; animation: fadeIn 0.2s ease; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 .empty { text-align: center; padding: 40px 16px; color: var(--text-secondary); font-size: 15px; }
-.source-btn { display: flex; align-items: center; justify-content: space-between; width: 100%; margin: 10px 0; padding: 14px 18px; border-radius: 16px; background: linear-gradient(180deg,#1a1a1a,#121212); border: 1px solid #333; box-shadow: 0 4px 12px rgba(0,0,0,0.4); transition: transform 0.15s, border-color 0.15s; }
+.source-btn { display: flex; align-items: center; justify-content: space-between; width: 100%; margin: 8px 0; padding: 18px 20px; border-radius: 18px; background: linear-gradient(180deg,#1a1a1a,#121212); border: 1px solid #333; box-shadow: 0 4px 12px rgba(0,0,0,0.4); transition: transform 0.15s, border-color 0.15s; min-height: 64px; }
 .source-btn:active { transform: scale(0.985); border-color: #007aff; }
-.source-btn .chevron { color: #007aff; font-size: 20px; font-weight: 700; }
+.source-btn .chevron { color: #007aff; font-size: 22px; font-weight: 700; }

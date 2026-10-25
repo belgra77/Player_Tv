@@ -1,13 +1,31 @@
 /* Player_Tv - app.js */
-window.APP_VERSION = "1.1.1";
+window.APP_VERSION = "1.1.8";
 
-const STORAGE = {
-  sources: "player_tv_sources",
-  channels: "player_tv_channels",
-  settings: "player_tv_settings",
-  version: "player_tv_version",
-};
-const UPDATE_URL = "https://raw.githubusercontent.com/belgra77/Player_Tv/main/index.html";
+const colorPalette = [
+    "linear-gradient(180deg,#ff6b6b,#c92a2a)",
+    "linear-gradient(180deg,#ffa94d,#e8590c)",
+    "linear-gradient(180deg,#ffd43b,#fab005)",
+    "linear-gradient(180deg,#69db7c,#37b24d)",
+    "linear-gradient(180deg,#3bc9db,#15aabf)",
+    "linear-gradient(180deg,#748ffc,#4c6ef5)",
+    "linear-gradient(180deg,#da77f2,#be4bdb)",
+    "linear-gradient(180deg,#f783ac,#e64980)",
+    "linear-gradient(180deg,#8ce99a,#40c057)",
+    "linear-gradient(180deg,#ff8787,#fa5252)"
+  ];
+  let colorIndex = 0;
+  function getNextColor() {
+    const color = colorPalette[colorIndex % colorPalette.length];
+    colorIndex++;
+    return color;
+  }
+
+function safeLS() {
+  try { return window.localStorage; } catch (e) { return null; }
+}
+function lsGet(key, def) { const ls = safeLS(); if (!ls) return def; try { return ls.getItem(key); } catch (e) { return def; } }
+function lsSet(key, val) { const ls = safeLS(); if (!ls) return; try { ls.setItem(key, val); } catch (e) {} }
+function lsRemove(key) { const ls = safeLS(); if (!ls) return; try { ls.removeItem(key); } catch (e) {} }
 
 let sources = [];
 let channels = [];
@@ -15,21 +33,21 @@ let settings = { autoUpdate: true };
 let editingSourceId = null;
 
 function loadState() {
-  const v = localStorage.getItem(STORAGE.version);
+  const v = lsGet(STORAGE.version);
   if (v && v !== window.APP_VERSION) {
-    localStorage.removeItem(STORAGE.sources);
-    localStorage.removeItem(STORAGE.channels);
-    localStorage.setItem(STORAGE.version, window.APP_VERSION);
+    lsRemove(STORAGE.sources);
+    lsRemove(STORAGE.channels);
+    lsSet(STORAGE.version, window.APP_VERSION);
   }
-  try { sources = JSON.parse(localStorage.getItem(STORAGE.sources) || "[]"); } catch (e) { sources = []; }
-  try { channels = JSON.parse(localStorage.getItem(STORAGE.channels) || "[]"); } catch (e) { channels = []; }
-  try { settings = Object.assign({ autoUpdate: true }, JSON.parse(localStorage.getItem(STORAGE.settings) || "{}")); } catch (e) { settings = { autoUpdate: true }; }
-  if (!localStorage.getItem(STORAGE.version)) localStorage.setItem(STORAGE.version, window.APP_VERSION);
+  try { sources = JSON.parse(lsGet(STORAGE.sources, "[]") || "[]"); } catch (e) { sources = []; }
+  try { channels = JSON.parse(lsGet(STORAGE.channels, "[]") || "[]"); } catch (e) { channels = []; }
+  try { settings = Object.assign({ autoUpdate: true }, JSON.parse(lsGet(STORAGE.settings, "{}") || "{}")); } catch (e) { settings = { autoUpdate: true }; }
+  if (!localStorage.getItem(STORAGE.version)) lsSet(STORAGE.version, window.APP_VERSION);
 }
 function saveState() {
-  localStorage.setItem(STORAGE.sources, JSON.stringify(sources.map(x=>{const{content,...r}=x;return r;})));
-  localStorage.setItem(STORAGE.channels, JSON.stringify(channels));
-  localStorage.setItem(STORAGE.settings, JSON.stringify(settings));
+  lsSet(STORAGE.sources, JSON.stringify(sources.map(x=>{const{content,...r}=x;return r;})));
+  lsSet(STORAGE.channels, JSON.stringify(channels));
+  lsSet(STORAGE.settings, JSON.stringify(settings));
 }
 
 // ---------- M3U parser ----------
@@ -121,6 +139,8 @@ function renderSources() {
   sources.forEach(src => {
     const cell = document.createElement("div");
     cell.className = "cell source-btn";
+    cell.style.background = src.color || "linear-gradient(180deg,#1a1a1a,#121212)";
+    cell.style.borderColor = "#333";
     cell.innerHTML = `
       <div class="icon">📋</div>
       <div class="content">
@@ -202,7 +222,7 @@ document.getElementById("modal-save").addEventListener("click", async () => {
     parsed.forEach(ch => channels.push({ ...ch, sourceId: src.id }));
   } else {
     const id = "src_" + Date.now();
-    const src = { id, name, type, url, content: "", channels: parsed, loadedAt: Date.now() };
+    const src = { id, name, type, url, content: "", channels: parsed, loadedAt: Date.now(), color: getNextColor() };
     sources.push(src);
     parsed.forEach(ch => channels.push({ ...ch, sourceId: id }));
   }
@@ -237,7 +257,6 @@ function renderChannels() {
   const q = document.getElementById("channel-search").value.toLowerCase();
   container.innerHTML = "";
   const filtered = channels.filter(c => c.name.toLowerCase().includes(q) || (c.group||"").toLowerCase().includes(q));
-  // group by source first
   const bySource = {};
   filtered.forEach(c => {
     const src = sources.find(s => s.id === c.sourceId);
@@ -256,50 +275,83 @@ function renderChannels() {
     return;
   }
   sourceNames.forEach(srcName => {
-    const srcHdr = document.createElement("div");
-    srcHdr.className = "group-header" + (collapsedGroups.has(srcName) ? " collapsed" : "");
-    const srcCount = Object.values(bySource[srcName]).reduce((a,b)=>a+b.length,0);
-    srcHdr.innerHTML = `<span class="arrow">▼</span>${escapeHtml(srcName)} (${srcCount})`;
+    // Source header as button
+    const src = sources.find(s => s.name === srcName);
+    const srcColor = src ? src.color : "linear-gradient(180deg,#1a1a1a,#121212)";
+    const srcCount = src ? src.channels.length : Object.values(bySource[srcName]).reduce((a,b)=>a+b.length,0);
+    // Source header as button
+    const srcBtn = document.createElement("div");
+    srcBtn.className = "cell source-btn";
+    srcBtn.style.background = srcColor;
+    srcBtn.style.borderColor = "#333";
+    srcBtn.innerHTML = `
+      <div class="icon">📋</div>
+      <div class="content">
+        <div class="title">${escapeHtml(srcName)}</div>
+        <div class="subtitle">${srcCount} canales</div>
+      </div>
+      <div class="chevron">${collapsedGroups.has(srcName) ? "▼" : "▶"}</div>
+    `;
+    srcBtn.addEventListener("click", () => {
+      if (collapsedGroups.has(srcName)) collapsedGroups.delete(srcName); else collapsedGroups.add(srcName);
+      renderChannels();
+    });
+    container.appendChild(srcBtn);
+
     const srcItems = document.createElement("div");
     srcItems.className = "group-items" + (collapsedGroups.has(srcName) ? " collapsed" : "");
     if (collapsedGroups.has(srcName)) srcItems.style.maxHeight = "0";
+
     Object.keys(bySource[srcName]).sort().forEach(g => {
       const key = srcName+"::"+g;
-      const gHdr = document.createElement("div");
-      gHdr.className = "group-header" + (collapsedGroups.has(key) ? " collapsed" : "");
-      gHdr.style.paddingLeft = "32px";
-      gHdr.innerHTML = `<span class="arrow">▼</span>${escapeHtml(g)} (${bySource[srcName][g].length})`;
+      const gCount = bySource[srcName][g].length;
+      // Group header as button
+      const gBtn = document.createElement("div");
+      gBtn.className = "cell source-btn";
+      gBtn.style.marginLeft = "24px";
+      gBtn.style.borderRadius = "12px";
+      gBtn.style.background = srcColor;
+      gBtn.style.borderColor = "#333";
+      gBtn.style.opacity = "0.85";
+      gBtn.innerHTML = `
+        <div class="icon">📁</div>
+        <div class="content">
+          <div class="title">${escapeHtml(g)}</div>
+          <div class="subtitle">${gCount} canales</div>
+        </div>
+        <div class="chevron">${collapsedGroups.has(key) ? "▼" : "▶"}</div>
+      `;
+      gBtn.addEventListener("click", () => {
+        if (collapsedGroups.has(key)) collapsedGroups.delete(key); else collapsedGroups.add(key);
+        renderChannels();
+      });
+      srcItems.appendChild(gBtn);
+
       const gItems = document.createElement("div");
       gItems.className = "group-items" + (collapsedGroups.has(key) ? " collapsed" : "");
       if (collapsedGroups.has(key)) gItems.style.maxHeight = "0";
-      else gItems.style.maxHeight = (bySource[srcName][g].length * 60 + 10) + "px";
-      bySource[srcName][g].forEach(ch => {
+      else gItems.style.maxHeight = (bySource[srcName][g].length * 62 + 10) + "px";
+      bySource[srcName][g].forEach((ch, i) => {
         const cell = document.createElement("div");
         cell.className = "cell source-btn";
-        cell.style.paddingLeft = "48px";
+        cell.style.background = srcColor;
+        cell.style.borderColor = "#333";
         cell.innerHTML = `
+          <div class="channel-chip">${i+1}</div>
           <div class="icon">${ch.logo ? `<img src="${escapeHtml(ch.logo)}" onerror="this.parentElement.textContent='📺'" />` : "📺"}</div>
           <div class="content">
             <div class="title">${escapeHtml(ch.name)}</div>
             <div class="subtitle">${escapeHtml(ch.group || "")}</div>
           </div>
-          <div class="chevron">›</div>
+          <div class="chevron">▶</div>
         `;
         cell.addEventListener("click", () => openPlayer(ch));
         gItems.appendChild(cell);
       });
-      gHdr.addEventListener("click", () => {
-        if (collapsedGroups.has(key)) collapsedGroups.delete(key); else collapsedGroups.add(key);
-        renderChannels();
-      });
-      srcItems.appendChild(gHdr);
+      srcItems.appendChild(gBtn);
       srcItems.appendChild(gItems);
     });
-    srcHdr.addEventListener("click", () => {
-      if (collapsedGroups.has(srcName)) collapsedGroups.delete(srcName); else collapsedGroups.add(srcName);
-      renderChannels();
-    });
-    container.appendChild(srcHdr);
+    container.appendChild(srcBtn);
     container.appendChild(srcItems);
   });
 }
@@ -455,14 +507,14 @@ async function fetchRemoteVersion() {
 async function checkUpdates(isManual) {
   try {
     const remote = await fetchRemoteVersion();
-    const local = localStorage.getItem(STORAGE.version) || window.APP_VERSION;
+    const local = lsGet(STORAGE.version) || window.APP_VERSION;
     if (compareVersions(remote, local) > 0) {
       const ok = await showAlert("Actualización disponible", `Nueva versión de Player_Tv disponible (v${remote}). ¿Actualizar ahora?`, [
         { label: "Cancelar", value: false },
         { label: "Actualizar", value: true, primary: true },
       ]);
       if (ok) {
-        localStorage.setItem(STORAGE.version, remote);
+        lsSet(STORAGE.version, remote);
         if ("serviceWorker" in navigator) {
           const regs = await navigator.serviceWorker.getRegistrations();
           await Promise.all(regs.map(r => r.unregister()));
@@ -513,7 +565,7 @@ async function loadDefaults() {
             def.channels = parsed; def.loadedAt = now; def.lastUpdate = now; def.name = L.name;
             parsed.forEach(ch => channels.push({ ...ch, sourceId: L.id }));
           } else {
-            sources.push({ id: L.id, name: L.name, type: "text", url: "", channels: parsed, loadedAt: now, lastUpdate: now });
+            sources.push({ id: L.id, name: L.name, type: "text", url: "", channels: parsed, loadedAt: now, lastUpdate: now, color: getNextColor() });
             parsed.forEach(ch => channels.push({ ...ch, sourceId: L.id }));
           }
           collapsedGroups.add(L.name);
