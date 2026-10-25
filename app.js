@@ -1,5 +1,5 @@
 /* Player_Tv - app.js */
-window.APP_VERSION = "1.0.9";
+window.APP_VERSION = "1.1.0";
 
 const STORAGE = {
   sources: "player_tv_sources",
@@ -120,7 +120,7 @@ function renderSources() {
   }
   sources.forEach(src => {
     const cell = document.createElement("div");
-    cell.className = "cell";
+    cell.className = "cell source-btn";
     cell.innerHTML = `
       <div class="icon">📋</div>
       <div class="content">
@@ -275,7 +275,7 @@ function renderChannels() {
       else gItems.style.maxHeight = (bySource[srcName][g].length * 60 + 10) + "px";
       bySource[srcName][g].forEach(ch => {
         const cell = document.createElement("div");
-        cell.className = "cell";
+        cell.className = "cell source-btn";
         cell.style.paddingLeft = "48px";
         cell.innerHTML = `
           <div class="icon">${ch.logo ? `<img src="${escapeHtml(ch.logo)}" onerror="this.parentElement.textContent='📺'" />` : "📺"}</div>
