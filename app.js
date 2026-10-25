@@ -1,5 +1,5 @@
 /* Player_Tv - app.js */
-window.APP_VERSION = "1.1.8";
+window.APP_VERSION = "1.1.11";
 
 const colorPalette = [
     "linear-gradient(180deg,#ff6b6b,#c92a2a)",
@@ -42,7 +42,7 @@ function loadState() {
   try { sources = JSON.parse(lsGet(STORAGE.sources, "[]") || "[]"); } catch (e) { sources = []; }
   try { channels = JSON.parse(lsGet(STORAGE.channels, "[]") || "[]"); } catch (e) { channels = []; }
   try { settings = Object.assign({ autoUpdate: true }, JSON.parse(lsGet(STORAGE.settings, "{}") || "{}")); } catch (e) { settings = { autoUpdate: true }; }
-  if (!localStorage.getItem(STORAGE.version)) lsSet(STORAGE.version, window.APP_VERSION);
+  if (!lsGet(STORAGE.version)) lsSet(STORAGE.version, window.APP_VERSION);
 }
 function saveState() {
   lsSet(STORAGE.sources, JSON.stringify(sources.map(x=>{const{content,...r}=x;return r;})));
@@ -571,8 +571,12 @@ async function loadDefaults() {
           collapsedGroups.add(L.name);
           parsed.forEach(ch => collapsedGroups.add(L.name + "::" + (ch.group || "Sin grupo")));
           changed = true;
+        } else {
+          console.warn("Failed to fetch", L.file, res.status);
         }
-      } catch (e) {}
+      } catch (e) {
+        console.warn("Error fetching", L.file, e);
+      }
     }
   }
   if (changed) { saveState(); renderSources(); renderChannels(); }
