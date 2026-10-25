@@ -43,8 +43,8 @@ html, body { touch-action: manipulation; margin: 0; padding: 0; height: 100%; fo
 .tab-btn svg { stroke: currentColor; }
 .player-view { position: fixed; inset: 0; background: #000; z-index: 50; display: flex; flex-direction: column; }
 .player-view.hidden { display: none; }
-.player-header { display: flex; align-items: center; justify-content: space-between; padding: 16px; color: #fff; background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); }
-.player-close { background: none; border: none; color: var(--accent); font-size: 17px; cursor: pointer; }
+.player-header { display: flex; align-items: center; justify-content: space-between; padding: 16px; color: #fff; background: rgba(0,0,0,0.6); backdrop-filter: blur(10px); position: relative; z-index: 60; }
+.player-close { background: none; border: none; color: var(--accent); font-size: 17px; cursor: pointer; position: relative; z-index: 61; pointer-events: auto; padding: 8px 12px; }
 .player-title { font-size: 17px; font-weight: 600; }
 .player-container { flex: 1; display: flex; align-items: center; justify-content: center; }
 #player-video { width: 100%; height: 100%; background: #000; }
