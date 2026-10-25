@@ -1,0 +1,23 @@
+{
+  "name": "Player_Tv",
+  "short_name": "Player_Tv",
+  "display": "standalone",
+  "theme_color": "#007AFF",
+  "background_color": "#FFFFFF",
+  "start_url": "./index.html",
+  "scope": "./",
+  "icons": [
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxOTIgMTkyIj48cmVjdCB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgcng9IjQ0IiBmaWxsPSIjMDA3QUZGIi8+PHBvbHlnb24gcG9pbnRzPSI3OCw2MCA3OCwxMzIgMTM4LDk2IiBmaWxsPSIjRkZGIi8+PC9zdmc+",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjExMiIgZmlsbD0iIzAwN0FGRiIvPjxwb2x5Z29uIHBvaW50cz0iMjA4LDE2MCAyMDgsMzUyIDM2OCwyNTYiIGZpbGw9IiNGRkYiLz48L3N2Zz4=",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

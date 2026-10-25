@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Player_Tv</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Player_Tv">
+<meta name="theme-color" content="#007AFF">
+<meta name="version" content="1.0.1">
+<link rel="manifest" href="./manifest.json">
+<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxOTIgMTkyIj48cmVjdCB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgcng9IjQ0IiBmaWxsPSIjMDA3QUZGIi8+PHBvbHlnb24gcG9pbnRzPSI3OCw2MCA3OCwxMzIgMTM4LDk2IiBmaWxsPSIjRkZGIi8+PC9zdmc+">
+<link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+<div id="app">
+  <!-- TAB: Canales -->
+  <section id="tab-channels" class="tab-view active">
+    <header class="nav-header">
+      <h1 class="large-title">Canales</h1>
+    </header>
+    <div class="search-bar-wrap">
+      <div class="search-bar">
+        <svg class="search-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35"/></svg>
+        <input id="channel-search" type="search" placeholder="Buscar" />
+      </div>
+    </div>
+    <div id="channels-list" class="grouped-list"></div>
+  </section>
+
+  <!-- TAB: Fuentes -->
+  <section id="tab-sources" class="tab-view">
+    <header class="nav-header">
+      <h1 class="large-title">Fuentes</h1>
+      <button id="add-source-btn" class="nav-add-btn" aria-label="Añadir fuente">+</button>
+    </header>
+    <div id="sources-list" class="grouped-list"></div>
+  </section>
+
+  <!-- TAB: Ajustes -->
+  <section id="tab-settings" class="tab-view">
+    <header class="nav-header">
+      <h1 class="large-title">Ajustes</h1>
+    </header>
+    <div id="settings-list" class="grouped-list"></div>
+  </section>
+
+  <!-- PLAYER -->
+  <section id="player-view" class="player-view hidden">
+    <div class="player-header">
+      <button id="player-close" class="player-close">Cerrar</button>
+      <span id="player-title" class="player-title"></span>
+    </div>
+    <div class="player-container">
+      <video id="player-video" playsinline controls></video>
+    </div>
+  </section>
+
+  <!-- MODAL: Source add/edit -->
+  <div id="source-modal" class="modal hidden">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <button id="modal-cancel" class="modal-btn cancel">Cancelar</button>
+        <span id="modal-title" class="modal-title">Nueva fuente</span>
+        <button id="modal-save" class="modal-btn accept">Guardar</button>
+      </div>
+      <div class="modal-body">
+        <label class="field-label">Nombre</label>
+        <input id="src-name" class="ios-input" type="text" placeholder="Nombre de la lista" />
+        <label class="field-label">Tipo</label>
+        <select id="src-type" class="ios-input">
+          <option value="url">URL</option>
+          <option value="text">Texto pegado</option>
+        </select>
+        <div id="src-url-wrap">
+          <label class="field-label">URL de la lista</label>
+          <input id="src-url" class="ios-input" type="url" placeholder="https://..." />
+        </div>
+        <div id="src-text-wrap" class="hidden">
+          <label class="field-label">Contenido M3U/M3U8</label>
+          <textarea id="src-text" class="ios-textarea" placeholder="#EXTM3U..."></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Alert -->
+  <div id="alert-modal" class="modal hidden">
+    <div class="alert-box">
+      <div class="alert-title" id="alert-title"></div>
+      <div class="alert-message" id="alert-message"></div>
+      <div class="alert-actions" id="alert-actions"></div>
+    </div>
+  </div>
+
+  <!-- TAB BAR -->
+  <nav class="tabbar">
+    <button class="tab-btn active" data-tab="channels">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg>
+      <span>Canales</span>
+    </button>
+    <button class="tab-btn" data-tab="sources">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+      <span>Fuentes</span>
+    </button>
+    <button class="tab-btn" data-tab="settings">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+      <span>Ajustes</span>
+    </button>
+  </nav>
+</div>
+<script src="./app.js?v=22"></script>
+</body>
+</html>
